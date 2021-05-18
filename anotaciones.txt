@@ -1,0 +1,62 @@
+graficos
+    venatana tamaño 25x80
+
+
+"multijugador"  --> añadir nombre a las puntuaciones
+    empezar pidiendo nombre 
+
+1º complejidad ------> añadir lagarto y spock ( condiciones victoria y tags)
+
+
+
+
+print("""
+    _______
+---'   ____)
+      (_____)
+      (_____)
+      (____)
+---.__(___)
+""")
+
+# Paper
+print("""
+     _______
+---'    ____)____
+           ______)
+          _______)
+         _______)
+---.__________)
+""")
+
+# Scissors
+print("""
+    _______
+---'   ____)____
+          ______)
+       __________)
+      (___)
+---.__(___)
+""")
+
+# Lyzzard
+print("""
+  _____________
+ /     ________)
+/      )_____
+      _______)
+     /
+---./
+""")
+
+# Spock
+print("""
+ ___       ___
+ \ \ \    / / /
+ _\ \ \  /   /
+| |    V   ./
+\ \        .|
+ \ .------./    
+""")
+
+las variables deberian ser sustantivos, las funciones verbos    
