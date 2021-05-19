@@ -44,9 +44,11 @@ cadenaPregunta2 = tags["preguntaError"]
 tablaPuntos = [victorias, derrotas, empates]
 
 
-def entrada():
+def entrada(inputTotales, inputBuenos):
     print(cadenaPregunta1)
     devolver = ""
+    inputTotales = 0
+    inputBuenos = 0
     while devolver not in opciones:
         devolver = input(tags["jugar"])
         # if devolver == "X":
@@ -54,7 +56,10 @@ def entrada():
         devolver = validar(devolver)
         if devolver not in opciones:
             print(cadenaPregunta2)
-    return (devolver)
+        inputTotales += 1
+    inputBuenos += 1
+    # arrayentrada = [jugadorM, currentTotalInput, currentSuccessInput]
+    return (devolver, inputTotales, inputBuenos)
 
 
 def validar(entrada):
@@ -182,14 +187,19 @@ def primeraVez(nombre, mode):
         json.dump(dictionary, outfile)
     
 
-def resumen(initialTime, elapsedTime):
+def resumen(initialTime, elapsedTime, currentTotalInput, currentSuccessInput):
     gmTime = time.gmtime(initialTime)
     timestring = time.strftime("%H : %M : %S", gmTime)
-    resumenTagger = {
+    resumenTimeTagger = {
         "timeString" : timestring,
         "elapsedTime" : int(elapsedTime)
     }
-    print(tags["resumen"].format(**(resumenTagger)))
+    resumenInputTagger = {
+        "inputBuenos" : currentSuccessInput,
+        "inputTotales" : currentTotalInput
+    }
+    print(tags["resumen"].format(**(resumenTimeTagger)))
+    print(tags["resumen2"].format(**(resumenInputTagger)))
 
 
 def continuar():
@@ -206,10 +216,16 @@ def main():
     mostrarPuntuacion(tablaPuntos)
     jugadorM = ""
     elapsedTime = None
+    currentTotalInput = 0
+    currentSuccessInput = 0
     while not jugadorM == ESCAPE:
         continuar()
         os.system("cls" if os.name == "nt" else "clear")
-        jugadorM = entrada()
+        # arrayentrada = [jugadorM, currentTotalInput, currentSuccessInput]
+        arrayentrada = entrada(currentTotalInput, currentSuccessInput)
+        jugadorM = arrayentrada[0]
+        currentTotalInput += arrayentrada[1]
+        currentSuccessInput += arrayentrada[2]
         maquinaM = aleatorio()
         resultadoM = comparar(jugadorM, maquinaM, tablaPuntos)
         salida(resultadoM, jugadorM, maquinaM)
@@ -220,7 +236,8 @@ def main():
     elapsedTime = previousTime + time.time() - startTime
     if SAVE_ON_EXIT:
         salvarPartida(usuario, tablaPuntos)
-    resumen(startTime, elapsedTime)
+    resumen(startTime, elapsedTime, currentTotalInput, currentSuccessInput)
 
 
 main()
+print("prueba de cambio")
