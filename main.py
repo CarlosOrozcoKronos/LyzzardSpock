@@ -182,12 +182,22 @@ def primeraVez(nombre, mode):
         json.dump(dictionary, outfile)
     
 
+def resumen(initialTime, elapsedTime):
+    gmTime = time.gmtime(initialTime)
+    timestring = time.strftime("%H : %M : %S", gmTime)
+    resumenTagger = {
+        "timeString" : timestring,
+        "elapsedTime" : int(elapsedTime)
+    }
+    print(tags["resumen"].format(**(resumenTagger)))
 
 
 def continuar():
     input(tags["continuar"])
 
 def main():
+    previousTime = 0
+    startTime = time.time()
     # empezamos preguntando el nombre y luego creando el archivo si no existe
     usuario = input(tags["tuNombre"])
     if (not os.path.exists(nombreFichero)):
@@ -195,6 +205,7 @@ def main():
     tablaPuntos = cargarPartida(usuario)
     mostrarPuntuacion(tablaPuntos)
     jugadorM = ""
+    elapsedTime = None
     while not jugadorM == ESCAPE:
         continuar()
         os.system("cls" if os.name == "nt" else "clear")
@@ -203,11 +214,13 @@ def main():
         resultadoM = comparar(jugadorM, maquinaM, tablaPuntos)
         salida(resultadoM, jugadorM, maquinaM)
         mostrarPuntuacion(tablaPuntos)
+        elapsedTime = previousTime + time.time() - startTime
         if SAVE_EACH_CYCLE:
             salvarPartida(usuario, tablaPuntos)
+    elapsedTime = previousTime + time.time() - startTime
     if SAVE_ON_EXIT:
         salvarPartida(usuario, tablaPuntos)
+    resumen(startTime, elapsedTime)
 
 
 main()
-print("prueba de cambio")
