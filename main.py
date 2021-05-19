@@ -14,7 +14,7 @@ nombreCarpeta = "20210506_rockPaperScissor"
 # funciona desde visualcodium
 # nombreFichero = "./"+nombreCarpeta + "/leaderBoard.json"
 # funciona desde linea de comandos
-nombreFichero = "./leaderBoard.json"
+nombreFichero = "./save.json"
 
 SAVE_ON_EXIT = True
 SAVE_EACH_CYCLE = False
