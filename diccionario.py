@@ -19,6 +19,6 @@ tags = {
     "continuar": "Golpee la tecla ""Enter"" para continuar",
     "tuNombre": "¿Como quieres que te llame?",
     "resumen": "Has empezado la partida a las {timeString} y has estado jugando {elapsedTime} segundos",
-    "resumen2": "Ademas has jugado bien {inputBuenos} veces, aunque lo has intentado {inputTotales} veces ",
-    "resumen3": "Esta aplicacion ha funcionado {totalElapsedTime}"
+    "resumen2": "Ademas se ha jugado bien {inputBuenos} veces, aunque se lo ha intentado {inputTotales} veces ",
+    "resumen3": "Esta aplicacion ha funcionado un total de {totalElapsedTime} segundos"
 }

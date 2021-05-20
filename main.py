@@ -148,19 +148,18 @@ def cargarPartida(nombre):
         leaderBoardData = json.load(leaderBoardFile)
     nombres = leaderBoardData["nombres"]
     stats = leaderBoardData["stats"]
+    tiempoEjecucion = stats["tiempoEjecucion"]
+    inputsTotales = stats["inputsTotales"]
+    inputsBuenos = stats["inputsBuenos"]
     if nombres.get(nombre) is None:
         primeraVez(nombre, False)
         # se devuelve la lista de puntuaciones y los stats
-        return [[0, 0, 0], [0, 0, 0]]
+        return [[0, 0, 0], [tiempoEjecucion, inputsTotales, inputsBuenos]]
     else:
         leaderBoardDataUser = nombres[nombre]
         cargaVictoria = int(leaderBoardDataUser['ganadas'])
         cargaDerrota = int(leaderBoardDataUser['perdidas'])
         cargaEmpates = int(leaderBoardDataUser['empatadas'])
-        leaderBoardDataStats = stats
-        tiempoEjecucion = stats["tiempoEjecucion"]
-        inputsTotales = stats["inputsTotales"]
-        inputsBuenos = stats["inputsBuenos"]
         return [[cargaVictoria, cargaDerrota, cargaEmpates],
                 [tiempoEjecucion, inputsTotales, inputsBuenos]]
 
@@ -204,12 +203,13 @@ def primeraVez(nombre, mode):
     dictionary = {}
     dictionary["nombres"] = {
     }
-    dictionary["stats"] = {
-        "tiempoEjecucion": 0,
-        "inputsBuenos": 0,
-        "inputsTotales": 0
-    }
-    if not mode:
+    if mode:
+        dictionary["stats"] = {
+            "tiempoEjecucion": 0,
+            "inputsBuenos": 0,
+            "inputsTotales": 0
+        }
+    else:
         with open(nombreFichero, 'r') as infile:
             dictionary = json.load(infile)
     dictionary["nombres"][nombre] = {
@@ -232,9 +232,12 @@ def resumen(initialTime, stats, elapsedTime):
         "inputBuenos": stats[iINPUTBUENO],
         "inputTotales": stats[iINPUTTOTAL]
     }
+    resumenTiempoFinalTagger = {
+        "totalElapsedTime": int(stats[iTIEMPOTOTAL])
+    }
     print(tags["resumen"].format(**(resumenTimeTagger)))
     print(tags["resumen2"].format(**(resumenInputTagger)))
-    print(tags["resumen3"].format(int(stats[iTIEMPOTOTAL])))
+    print(tags["resumen3"].format(**(resumenTiempoFinalTagger)))
 
 
 def continuar():
