@@ -1,6 +1,6 @@
 __pycache__
 workspace.code-workspace
 .vscode
-# .gitignore
+.gitignore
 save.json
 cursesHolaMundo
