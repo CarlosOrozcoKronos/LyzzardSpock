@@ -21,11 +21,16 @@ SAVE_EACH_CYCLE = False
 
 ESCAPE = "X"
 VICTORIA = "V"
-iVICTORIA = 0
 PERDIDA = "D"
-iPERDIDA = 1
 EMPATE = "E"
+iPOINTS = 0
+iSTATS = 1
+iVICTORIA = 0
+iPERDIDA = 1
 iEMPATE = 2
+iTIEMPOTOTAL = 0
+iINPUTBUENO = 1
+iINPUTTOTAL = 2
 victorias = 0
 derrotas = 0
 empates = 0
@@ -141,28 +146,44 @@ def cargarPartida(nombre):
     leaderBoardData = {}
     with open(nombreFichero) as leaderBoardFile:
         leaderBoardData = json.load(leaderBoardFile)
-    if leaderBoardData.get(nombre) is None:
+    nombres = leaderBoardData["nombres"]
+    stats = leaderBoardData["stats"]
+    if nombres.get(nombre) is None:
         primeraVez(nombre, False)
-        return [0, 0, 0]
+        # se devuelve la lista de puntuaciones y los stats
+        return [[0, 0, 0], [0, 0, 0]]
     else:
-        leaderBoardDataUser = leaderBoardData[nombre]
+        leaderBoardDataUser = nombres[nombre]
         cargaVictoria = int(leaderBoardDataUser['ganadas'])
         cargaDerrota = int(leaderBoardDataUser['perdidas'])
         cargaEmpates = int(leaderBoardDataUser['empatadas'])
-        return [cargaVictoria, cargaDerrota, cargaEmpates]
+        leaderBoardDataStats = stats
+        tiempoEjecucion = stats["tiempoEjecucion"]
+        inputsTotales = stats["inputsTotales"]
+        inputsBuenos = stats["inputsBuenos"]
+        return [[cargaVictoria, cargaDerrota, cargaEmpates],
+                [tiempoEjecucion, inputsTotales, inputsBuenos]]
 
 
-def salvarPartida(nombre, listaGuardar):
+def salvarPartida(nombre, listaPuntosGuardar, listaStatsGuardar, partialTime):
     print(tags["guardo"])
-    dictionaryElem = {
-        "empatadas": listaGuardar[iEMPATE],
-        "ganadas": listaGuardar[iVICTORIA],
-        "perdidas": listaGuardar[iPERDIDA]
+    dictionaryPoints = {
+        "empatadas": listaPuntosGuardar[iEMPATE],
+        "ganadas": listaPuntosGuardar[iVICTORIA],
+        "perdidas": listaPuntosGuardar[iPERDIDA]
     }
+    dictionaryStats = {
+        "tiempoEjecucion": listaStatsGuardar[iTIEMPOTOTAL],
+        "inputsBuenos": listaStatsGuardar[iINPUTBUENO],
+        "inputsTotales": listaStatsGuardar[iINPUTTOTAL]
+        }
+    if partialTime is not None:
+        dictionaryStats["tiempoEjecucion"] += partialTime
     dictionary = {}
     with open(nombreFichero, 'r') as infile:
         dictionary = json.load(infile)
-    dictionary[nombre] = dictionaryElem
+    dictionary["nombres"][nombre] = dictionaryPoints
+    dictionary["stats"] = dictionaryStats
     with open(nombreFichero, 'w') as outfile:
         json.dump(dictionary, outfile)
 
@@ -181,31 +202,39 @@ def mostrarPuntuacion(lisPuntos):
 def primeraVez(nombre, mode):
     """ mode == True inicializa archivo, mode == False inicializa jugador"""
     dictionary = {}
-    if mode == False :
+    dictionary["nombres"] = {
+    }
+    dictionary["stats"] = {
+        "tiempoEjecucion": 0,
+        "inputsBuenos": 0,
+        "inputsTotales": 0
+    }
+    if not mode:
         with open(nombreFichero, 'r') as infile:
             dictionary = json.load(infile)
-    dictionary[nombre] = {
+    dictionary["nombres"][nombre] = {
         "empatadas": 0,
         "ganadas": 0,
         "perdidas": 0
     }
     with open(nombreFichero, 'w') as outfile:
         json.dump(dictionary, outfile)
-    
 
-def resumen(initialTime, elapsedTime, currentTotalInput, currentSuccessInput):
+
+def resumen(initialTime, stats, elapsedTime):
     gmTime = time.gmtime(initialTime)
     timestring = time.strftime("%H : %M : %S", gmTime)
     resumenTimeTagger = {
-        "timeString" : timestring,
-        "elapsedTime" : int(elapsedTime)
+        "timeString": timestring,
+        "elapsedTime": elapsedTime
     }
     resumenInputTagger = {
-        "inputBuenos" : currentSuccessInput,
-        "inputTotales" : currentTotalInput
+        "inputBuenos": stats[iINPUTBUENO],
+        "inputTotales": stats[iINPUTTOTAL]
     }
     print(tags["resumen"].format(**(resumenTimeTagger)))
     print(tags["resumen2"].format(**(resumenInputTagger)))
+    print(tags["resumen3"].format(int(stats[iTIEMPOTOTAL])))
 
 
 def continuar():
@@ -219,31 +248,36 @@ def main():
     usuario = input(tags["tuNombre"])
     if (not os.path.exists(nombreFichero)):
         primeraVez(usuario, True)
-    tablaPuntos = cargarPartida(usuario)
+    tablaDatos = cargarPartida(usuario)
+    tablaPuntos = tablaDatos[iPOINTS]
+    tablaStats = tablaDatos[iSTATS]
     mostrarPuntuacion(tablaPuntos)
     jugadorM = ""
-    elapsedTime = None
+    elapsedTime = 0
+    partialElapsedTime = 0
     currentTotalInput = 0
     currentSuccessInput = 0
     while not jugadorM == ESCAPE:
+        currentTime = time.time()
         continuar()
         os.system("cls" if os.name == "nt" else "clear")
         # arrayentrada = [jugadorM, currentTotalInput, currentSuccessInput]
         arrayentrada = entrada(currentTotalInput, currentSuccessInput)
         jugadorM = arrayentrada[0]
-        currentTotalInput += arrayentrada[1]
-        currentSuccessInput += arrayentrada[2]
+        tablaStats[iINPUTTOTAL] += arrayentrada[1]
+        tablaStats[iINPUTBUENO] += arrayentrada[2]
         maquinaM = aleatorio()
         resultadoM = comparar(jugadorM, maquinaM, tablaPuntos)
         salida(resultadoM, jugadorM, maquinaM)
         mostrarPuntuacion(tablaPuntos)
-        elapsedTime = previousTime + time.time() - startTime
+        partialElapsedTime = time.time() - currentTime
+        elapsedTime = time.time() - startTime
         if SAVE_EACH_CYCLE:
-            salvarPartida(usuario, tablaPuntos)
-    elapsedTime = previousTime + time.time() - startTime
+            salvarPartida(usuario, tablaPuntos, tablaStats, partialElapsedTime)
+    tablaStats[iTIEMPOTOTAL] += time.time() - startTime
     if SAVE_ON_EXIT:
-        salvarPartida(usuario, tablaPuntos)
-    resumen(startTime, elapsedTime, currentTotalInput, currentSuccessInput)
+        salvarPartida(usuario, tablaPuntos, tablaStats, None)
+    resumen(startTime, tablaStats, elapsedTime)
 
 
 main()
