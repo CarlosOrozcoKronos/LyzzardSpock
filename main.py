@@ -7,7 +7,7 @@ import random
 import json
 import os
 import time
-import curses
+# import curses
 import asciiArt
 from diccionario import tags
 nombreCarpeta = "20210506_rockPaperScissor"
