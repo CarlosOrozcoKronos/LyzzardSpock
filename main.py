@@ -33,8 +33,9 @@ empates = 0
 
 opciones = ["R", "P", "S", "L", "K", ESCAPE]
 # opciones = ["R", "P", "S"]
-superiores = [["R", "S"], ["R","L"], ["P", "R"], ["P","K"], ["S", "P"], ["S","L"], ["K","S"], ["K","K"]]
-#superiores = [ "RS", "PR", "SP"]
+superiores = [["R", "S"], ["R", "L"], ["P", "R"], ["P", "K"], ["S", "P"],
+              ["S", "L"], ["K", "S"], ["K", "K"]]
+# superiores = [ "RS", "PR", "SP"]
 cadenaPregunta1 = tags["preguntaInicio"]
 cadenaPregunta2 = tags["preguntaError"]
 # cadenaPregunta1 = "Tiene cuatro opciones: R(piedra) P(papel) S(tijeras)"
@@ -75,8 +76,8 @@ def aleatorio():
 
 
 def comparar(jugador, maquina, compaList):
-#    victoriaVariable = [jugador, maquina]
-#    victoriaVariable = str(jugador) + str(maquina)
+    # victoriaVariable = [jugador, maquina]
+    # victoriaVariable = str(jugador) + str(maquina)
     if jugador == maquina:
         puntuar(EMPATE, compaList)
         return tags["empate"]
@@ -88,6 +89,7 @@ def comparar(jugador, maquina, compaList):
     else:
         puntuar(PERDIDA, compaList)
         return tags["pierdes"]
+
 
 def traductor(opc):
     if opc == "R":
@@ -105,19 +107,23 @@ def traductor(opc):
 
 
 def salida(resultado, seleccionJugador, seleccionMaquina):
-    # "resultado" : "{resultado}, la maquina jugo: {seleccionMaquina} y tu jugaste {seleccionJugador}",
+    # "resultado" : "{resultado}, la maquina jugo: {seleccionMaquina} y
+    # tu jugaste {seleccionJugador}",
     salidaTagger = {
-        "resultado":resultado,
-        "seleccionMaquina":traductor(seleccionMaquina),
-        "seleccionJugador":traductor(seleccionJugador)
+        "resultado": resultado,
+        "seleccionMaquina": traductor(seleccionMaquina),
+        "seleccionJugador": traductor(seleccionJugador)
     }
-    if not seleccionJugador == ESCAPE :
-        ventana(seleccionJugador,seleccionMaquina,salidaTagger)
+    if not seleccionJugador == ESCAPE:
+        ventana(seleccionJugador, seleccionMaquina, salidaTagger)
+
 
 def ventana(seleccionJugador, seleccionMaquina, salidaTagger):
     print(tags["resultado"].format(**(salidaTagger)))
-    for linea in range(0,6):
-        print("                           "+asciiArt.printAsciiArt(seleccionMaquina,linea) + "\r"+ asciiArt.printAsciiArt(seleccionJugador,linea))
+    for linea in range(0, 6):
+        print("                           "+asciiArt.printAsciiArt(
+            seleccionMaquina, linea) + "\r" + asciiArt.printAsciiArt(
+            seleccionJugador, linea))
 
 
 def puntuar(tipo, listaPuntua):
@@ -132,13 +138,13 @@ def puntuar(tipo, listaPuntua):
 
 def cargarPartida(nombre):
     print(tags["cargo"])
-    leaderBoardData ={}
+    leaderBoardData = {}
     with open(nombreFichero) as leaderBoardFile:
         leaderBoardData = json.load(leaderBoardFile)
-    if leaderBoardData.get(nombre) is None :
-        primeraVez(nombre,False)
+    if leaderBoardData.get(nombre) is None:
+        primeraVez(nombre, False)
         return [0, 0, 0]
-    else:    
+    else:
         leaderBoardDataUser = leaderBoardData[nombre]
         cargaVictoria = int(leaderBoardDataUser['ganadas'])
         cargaDerrota = int(leaderBoardDataUser['perdidas'])
@@ -164,9 +170,9 @@ def salvarPartida(nombre, listaGuardar):
 def mostrarPuntuacion(lisPuntos):
     #     "puntuacion" : "V: {victorias}, E: {empates}, D: {derrotas}"
     puntuacionTagger = {
-        "victorias" : lisPuntos[iVICTORIA], 
-        "empates" : lisPuntos[iEMPATE], 
-        "derrotas" : lisPuntos[iPERDIDA]
+        "victorias": lisPuntos[iVICTORIA],
+        "empates": lisPuntos[iEMPATE],
+        "derrotas": lisPuntos[iPERDIDA]
     }
     print(tags["puntuacion"].format(**(puntuacionTagger)))
 
@@ -205,6 +211,7 @@ def resumen(initialTime, elapsedTime, currentTotalInput, currentSuccessInput):
 def continuar():
     input(tags["continuar"])
 
+
 def main():
     previousTime = 0
     startTime = time.time()
@@ -240,4 +247,3 @@ def main():
 
 
 main()
-print("prueba de cambio")
