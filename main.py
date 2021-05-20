@@ -276,7 +276,7 @@ def main():
         partialElapsedTime = time.time() - currentTime
         elapsedTime = time.time() - startTime
         if SAVE_EACH_CYCLE:
-            salvarPartida(usuario, tablaPuntos, tablaStats, partialElapsedTime)
+            salvarPartida(usuario, tablaPuntos, tablaStats, elapsedTime)
     tablaStats[iTIEMPOTOTAL] += time.time() - startTime
     if SAVE_ON_EXIT:
         salvarPartida(usuario, tablaPuntos, tablaStats, None)
