@@ -19,6 +19,8 @@ nombreFichero = "./save.json"
 SAVE_ON_EXIT = True
 SAVE_EACH_CYCLE = False
 
+# prueba para commit en linea de comandos
+
 ESCAPE = "X"
 VICTORIA = "V"
 PERDIDA = "D"
